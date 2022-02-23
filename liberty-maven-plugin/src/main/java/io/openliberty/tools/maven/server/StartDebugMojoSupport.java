@@ -320,6 +320,7 @@ public class StartDebugMojoSupport extends BasicSupport {
             List<Dependency> deps = copyDependencies.getDependencies();
             boolean defaultStripVersion = copyDependencies.isStripVersion();
             String defaultLocation = copyDependencies.getLocation();
+            log.info("copyDependencies location is: '" + defaultLocation + "'");
             defaultLocation = substituteLibertyProps(defaultLocation);
             File dftLocationFile = new File(defaultLocation);
 
@@ -369,16 +370,24 @@ public class StartDebugMojoSupport extends BasicSupport {
     }
 
     private String substituteLibertyProps(String location) throws IOException {
-		
+    	
+    	log.info("copyDependencies - location: " + location);		
     	String userDirLoc = userDirectory.getCanonicalPath();
 
     	String sharedConfigDir = "${shared.config.dir}";
+    	String sharedResourceDir = "${shared.resource.dir}";
 
     	// usr/servers/myServer
     	if (location.startsWith(sharedConfigDir)) {
     		String sharedConfigPath = userDirLoc + "/shared/config";
     		//location.replaceFirst(sharedConfigDir, sharedConfigPath);
     		return location.replace(sharedConfigDir, sharedConfigPath);
+    		
+    	} else if (location.startsWith(sharedResourceDir)) {
+    		String sharedResourcePath = userDirLoc + "/shared/resources";
+    		
+    		log.info("copyDependencies - new location: " + location.replace(sharedResourceDir, sharedResourcePath));	
+    		return location.replace(sharedResourceDir, sharedResourcePath);
     	}
     	
     	return location;
